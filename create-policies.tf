@@ -1,7 +1,6 @@
 # Create IAM policies for each region
 resource "aws_iam_policy" "region_policies" {
   count = length(var.regions)
-
   name        = "policy-restrict-in-${var.regions[count.index]}"
   description = "Restrict access to resources within ${var.regions[count.index]}"
 
@@ -9,23 +8,24 @@ resource "aws_iam_policy" "region_policies" {
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "RestrictRegion"
             "Effect": "Allow",
-            "Action": "*",
-            "Resource": "*",
             "Condition": {
                 "StringEquals": {
                     "aws:RequestedRegion": "$var.regions[count.index]"
                 }
-            }
+            },
+            "Action": "*",
+            "Resource": "*"
         },
         {
             "Sid": "EnforceMFA",
+            "Effect": "Deny",
             "Condition": {
                 "BoolIfExists": {
                     "aws:MultiFactorAuthPresent": "false"
                 }
             },
-            "Effect": "Deny",
             "NotAction": [
                 "iam:CreateVirtualMFADevice",
                 "iam:DeleteVirtualMFADevice",
@@ -79,10 +79,10 @@ resource "aws_iam_policy" "region_policies" {
                 "iam:GetLoginProfile",
                 "iam:ListGroupsForUser"
             ],
-            "Resource": "*"
-            # "NotResource": [
-            #     "arn:aws:iam::*:user/${aws:username}"
-            # ]
+            # "Resource": "*"
+            "NotResource": [
+                "arn:aws:iam::*:user/{{aws:username}}"
+            ]
         }
     ]
   })
