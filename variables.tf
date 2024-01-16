@@ -1,3 +1,8 @@
+variable "aws_profile" {
+  type    = string
+  # You can add more constraints or defaults if needed
+}
+
 variable "groups_users" {
     type = map(list(string))
     default = {
@@ -9,7 +14,7 @@ variable "groups_users" {
   }
 }
 # Define the list of regions
-variable "regions" {
+variable "group_regions" {
   default = [
     "us-east-1",
     "us-east-2",
