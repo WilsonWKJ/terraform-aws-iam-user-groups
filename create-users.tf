@@ -8,6 +8,7 @@ resource "aws_iam_user_login_profile" "new_user_login_profile" {
   user                    = flatten(values(var.groups_users))[count.index]
   password_reset_required = true
   # password                = "mRQH4(x("
+  
   depends_on = [
     aws_iam_user.iam_users
    ]
